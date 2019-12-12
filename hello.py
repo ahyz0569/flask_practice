@@ -85,6 +85,18 @@ def movies():
     movies = ['겨울왕국2', '나이브스아웃', '포드v페라리']
     return render_template('movies.html', movies=movies)
 
+@app.route('/ping')
+def ping():
+    return render_template('ping.html')
+
+@app.route('/pong', methods=['GET', 'POST'])
+def pong():
+    # request.args => GET방식으로 데이터가 들어올 때  
+    # request.form => POST방식으로 데이터가 들어올 때
+    # print(request.form.get('keyword'))
+    keyword = request.form.get('keyword')
+    return render_template('pong.html', keyword=keyword)
+
 if __name__ == '__main__':
     # debug=True: 개발자 모드를 켜놔서 저장할때마다 서버에 반영이 됨
     app.run(debug=True)
