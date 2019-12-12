@@ -47,6 +47,7 @@ def cube(number):
     # return render_template('cube.html', html_number=def_number, cube_num=cube_num)
     return render_template('cube.html', html_number=def_number)
 
+# 점심메뉴 추천
 @app.route('/lunch')
 def lunch():
     lunch_menu= ['20층A 부대찌개','20층B','양자강','소풍라면','솥뚜껑볶음밥']
@@ -77,6 +78,12 @@ def lunch():
     img = menus[pick]
 
     return render_template('lunch.html', lunch=pick, lunch_img=img )
+
+# 
+@app.route('/movies')
+def movies():
+    movies = ['겨울왕국2', '나이브스아웃', '포드v페라리']
+    return render_template('movies.html', movies=movies)
 
 if __name__ == '__main__':
     # debug=True: 개발자 모드를 켜놔서 저장할때마다 서버에 반영이 됨
