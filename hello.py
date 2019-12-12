@@ -1,5 +1,7 @@
 from flask import Flask, escape, request, render_template
 import random
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -104,6 +106,51 @@ def naver():
 @app.route('/google')
 def google():
     return render_template('google.html')
+
+@app.route('/summoner')
+def summoner():
+    return render_template('summoner.html')
+
+@app.route('/opgg')
+def opgg():
+    # request.args: 의 데이터형식은 dictionary
+    # request.args['keyname']: 로도 접근이 가능 (but, 값이 없을 때 에러 발생)
+    # username = request.args.get('username', '값이 없을 때 defalut값을 설정할 수 있음')
+    username = request.args.get('username')
+    opgg_url = f'https://www.op.gg/summoner/userName={username}'
+    
+    res = requests.get(opgg_url).text
+    soup = BeautifulSoup(res, 'html.parser')
+
+    # 티어정보, 최근 20전, TOP3, 선호 포지션, 가장 최근 플레이 시간
+    
+    tier_select = '#SummonerLayoutContent > div.tabItem.Content.SummonerLayoutContent.summonerLayout-summary > div.SideContent > div.TierBox.Box > div > div.TierRankInfo > div.TierRank'
+    tier=soup.select_one(tier_select)
+    print(tier.text)
+
+    ratio_select = '.WinRatioTitle'
+    ratio = soup.select_one(ratio_select)
+    print(ratio.text)
+
+    most3_select = '.MostChampion > ul > li'
+    most3 = soup.select(most3_select)
+    print(most3)
+
+    #most3_list=[]
+    #for most in most3:
+    #    most_tmp = most.select( '.Name' )
+    #    print(most_tmp)
+    #    most3_list.append(most_tmp.text)
+
+    #print(most3_list)
+
+    #summoner_inf = {
+    #    "tier" : tier.text,
+    #    "ratio" : ratio.text,
+    #    "most" :
+    #}
+
+    return render_template('opgg.html', username=username, tier=tier.text)
 
 if __name__ == '__main__':
     # debug=True: 개발자 모드를 켜놔서 저장할때마다 서버에 반영이 됨
